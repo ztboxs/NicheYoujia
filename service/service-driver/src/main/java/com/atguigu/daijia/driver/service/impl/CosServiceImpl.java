@@ -111,6 +111,7 @@ public class CosServiceImpl implements CosService {
      * @param path
      * @return
      */
+    @Override
     public String getImageUrl(String path) {
         if(!StringUtils.hasText(path)) {
             return "";
