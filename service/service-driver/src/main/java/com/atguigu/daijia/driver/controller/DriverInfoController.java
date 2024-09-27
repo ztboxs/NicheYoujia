@@ -57,5 +57,7 @@ public class DriverInfoController {
         Boolean isSuccess = driverInfoService.creatDriverFaceModel(driverFaceModelForm);
         return Result.ok(isSuccess);
     }
+
+
 }
 

@@ -46,14 +46,14 @@ public class OcrServiceImpl implements OcrService {
      */
     @Override
     public IdCardOcrVo idCardOcr(MultipartFile file) {
-
-
-        try {
+        try{
             //图片转换base64格式字符串
             byte[] base64 = Base64.encodeBase64(file.getBytes());
             String fileBase64 = new String(base64);
+
             // 实例化一个认证对象，入参需要传入腾讯云账户 SecretId 和 SecretKey，此处还需注意密钥对的保密
-            Credential cred = new Credential(tencentCloudProperties.getSecretId(), tencentCloudProperties.getSecretKey());
+            Credential cred = new Credential(tencentCloudProperties.getSecretId(),
+                    tencentCloudProperties.getSecretKey());
             // 实例化一个http选项，可选的，没有特殊需求可以跳过
             HttpProfile httpProfile = new HttpProfile();
             httpProfile.setEndpoint("ocr.tencentcloudapi.com");
@@ -61,17 +61,17 @@ public class OcrServiceImpl implements OcrService {
             ClientProfile clientProfile = new ClientProfile();
             clientProfile.setHttpProfile(httpProfile);
             // 实例化要请求产品的client对象,clientProfile是可选的
-            OcrClient client = new OcrClient(cred, tencentCloudProperties.getRegion(), clientProfile);
+            OcrClient client = new OcrClient(cred,tencentCloudProperties.getRegion(), clientProfile);
             // 实例化一个请求对象,每个接口都会对应一个request对象
             IDCardOCRRequest req = new IDCardOCRRequest();
             //设置文件
             req.setImageBase64(fileBase64);
+
             // 返回的resp是一个IDCardOCRResponse的实例，与请求对象对应
             IDCardOCRResponse resp = client.IDCardOCR(req);
+
             //转换为IdCardOcrVo对象
             IdCardOcrVo idCardOcrVo = new IdCardOcrVo();
-
-            //判空
             if (StringUtils.hasText(resp.getName())) {
                 //身份证正面
                 idCardOcrVo.setName(resp.getName());
@@ -79,6 +79,7 @@ public class OcrServiceImpl implements OcrService {
                 idCardOcrVo.setBirthday(DateTimeFormat.forPattern("yyyy/MM/dd").parseDateTime(resp.getBirth()).toDate());
                 idCardOcrVo.setIdcardNo(resp.getIdNum());
                 idCardOcrVo.setIdcardAddress(resp.getAddress());
+
                 //上传身份证正面图片到腾讯云cos
                 CosUploadVo cosUploadVo = cosService.upload(file, "idCard");
                 idCardOcrVo.setIdcardFrontUrl(cosUploadVo.getUrl());
@@ -95,6 +96,7 @@ public class OcrServiceImpl implements OcrService {
             }
             return idCardOcrVo;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new GuiguException(ResultCodeEnum.DATA_ERROR);
         }
     }
