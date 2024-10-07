@@ -52,7 +52,6 @@ public class MapServiceImpl implements MapService {
         //判断调用是否成功
         int status = result.getIntValue("status");
         if(status != 0) {//失败
-            System.out.println("status==============="+ status);
             throw new GuiguException(ResultCodeEnum.MAP_FAIL);
         }
 
