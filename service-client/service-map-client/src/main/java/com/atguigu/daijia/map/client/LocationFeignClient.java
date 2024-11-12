@@ -38,6 +38,7 @@ public interface LocationFeignClient {
      * @param searchNearByDriverForm
      * @return
      */
-    @DeleteMapping("/map/location/searchNearByDriver")
-    Result<List<NearByDriverVo>> searchNearByDriver(@RequestBody SearchNearByDriverForm searchNearByDriverForm);
+    @PostMapping("/map/location/searchNearByDriver")
+    Result<List<NearByDriverVo>> searchNearByDriver(@RequestBody
+                                                            SearchNearByDriverForm searchNearByDriverForm);
 }

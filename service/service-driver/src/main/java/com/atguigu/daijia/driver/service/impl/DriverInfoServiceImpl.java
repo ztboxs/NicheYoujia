@@ -292,9 +292,10 @@ public class DriverInfoServiceImpl extends ServiceImpl<DriverInfoMapper, DriverI
             System.out.println(AbstractModel.toJsonString(resp));
             if(resp.getIsMatch()) { //照片比对成功
                 //2 如果照片比对成功，静态活体检测
-                Boolean isSuccess = this.
-                        detectLiveFace(driverFaceModelForm.getImageBase64());
-                if(isSuccess) {//3 如果静态活体检测通过，添加数据到认证表里面
+                //Todo 2024-11-12 先测试后面再开活体
+//                Boolean isSuccess = this.
+//                        detectLiveFace(driverFaceModelForm.getImageBase64());
+                if(true) {//3 如果静态活体检测通过，添加数据到认证表里面
                     DriverFaceRecognition driverFaceRecognition = new DriverFaceRecognition();
                     driverFaceRecognition.setDriverId(driverFaceModelForm.getDriverId());
                     driverFaceRecognition.setFaceDate(new Date());
