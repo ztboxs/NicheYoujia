@@ -3,6 +3,8 @@ package com.atguigu.daijia.customer.service;
 import com.atguigu.daijia.model.form.customer.ExpectOrderForm;
 import com.atguigu.daijia.model.form.customer.SubmitOrderForm;
 import com.atguigu.daijia.model.vo.customer.ExpectOrderVo;
+import com.atguigu.daijia.model.vo.order.CurrentOrderInfoVo;
+import com.atguigu.daijia.model.vo.order.OrderInfoVo;
 
 public interface OrderService {
 
@@ -26,4 +28,19 @@ public interface OrderService {
      * @return
      */
     Integer getOrderStatus(Long orderId);
+
+    /**
+     * 乘客查找当前订单
+     * @param customerId
+     * @return
+     */
+    CurrentOrderInfoVo searchCustomerCurrentOrder(Long customerId);
+
+    /**
+     * 获取订单信息
+     * @param orderId
+     * @param customerId
+     * @return
+     */
+    OrderInfoVo getOrderInfo(Long orderId, Long customerId);
 }
