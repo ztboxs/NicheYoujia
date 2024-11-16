@@ -7,6 +7,7 @@ import com.atguigu.daijia.driver.service.OrderService;
 import com.atguigu.daijia.map.client.MapFeignClient;
 import com.atguigu.daijia.model.entity.order.OrderInfo;
 import com.atguigu.daijia.model.form.map.CalculateDrivingLineForm;
+import com.atguigu.daijia.model.form.order.StartDriveForm;
 import com.atguigu.daijia.model.form.order.UpdateOrderCartForm;
 import com.atguigu.daijia.model.vo.map.DrivingLineVo;
 import com.atguigu.daijia.model.vo.order.CurrentOrderInfoVo;
@@ -122,5 +123,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Boolean updateOrderCart(UpdateOrderCartForm updateOrderCartForm) {
         return  orderInfoFeignClient.updateOrderCart(updateOrderCartForm).getData();
+    }
+
+    /**
+     * 开始代驾服务
+     * @param startDriveForm
+     * @return
+     */
+    @Override
+    public Boolean startDriver(StartDriveForm startDriveForm) {
+        return orderInfoFeignClient.startDrive(startDriveForm).getData();
     }
 }
