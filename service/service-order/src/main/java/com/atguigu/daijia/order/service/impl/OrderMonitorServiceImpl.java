@@ -1,7 +1,9 @@
 package com.atguigu.daijia.order.service.impl;
 
 import com.atguigu.daijia.model.entity.order.OrderMonitor;
+import com.atguigu.daijia.model.entity.order.OrderMonitorRecord;
 import com.atguigu.daijia.order.mapper.OrderMonitorMapper;
+import com.atguigu.daijia.order.repository.OrderMonitorRecordRepository;
 import com.atguigu.daijia.order.service.OrderMonitorService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,4 +14,20 @@ import org.springframework.stereotype.Service;
 public class OrderMonitorServiceImpl extends ServiceImpl<OrderMonitorMapper, OrderMonitor> implements OrderMonitorService {
 
 
+    private final OrderMonitorRecordRepository orderMonitorRecordRepository;
+
+    public OrderMonitorServiceImpl(OrderMonitorRecordRepository orderMonitorRecordRepository) {
+        this.orderMonitorRecordRepository = orderMonitorRecordRepository;
+    }
+
+    /**
+     * 保存订单监控记录数据
+     * @param orderMonitorRecord
+     * @return
+     */
+    @Override
+    public Boolean saveOrderMonitorRecord(OrderMonitorRecord orderMonitorRecord) {
+        orderMonitorRecordRepository.save(orderMonitorRecord);
+        return true;
+    }
 }

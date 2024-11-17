@@ -3,14 +3,19 @@ package com.atguigu.daijia.order.service.impl;
 import com.atguigu.daijia.common.constant.RedisConstant;
 import com.atguigu.daijia.common.execption.GuiguException;
 import com.atguigu.daijia.common.result.ResultCodeEnum;
+import com.atguigu.daijia.model.entity.order.OrderBill;
 import com.atguigu.daijia.model.entity.order.OrderInfo;
+import com.atguigu.daijia.model.entity.order.OrderProfitsharing;
 import com.atguigu.daijia.model.entity.order.OrderStatusLog;
 import com.atguigu.daijia.model.enums.OrderStatus;
 import com.atguigu.daijia.model.form.order.OrderInfoForm;
 import com.atguigu.daijia.model.form.order.StartDriveForm;
+import com.atguigu.daijia.model.form.order.UpdateOrderBillForm;
 import com.atguigu.daijia.model.form.order.UpdateOrderCartForm;
 import com.atguigu.daijia.model.vo.order.CurrentOrderInfoVo;
+import com.atguigu.daijia.order.mapper.OrderBillMapper;
 import com.atguigu.daijia.order.mapper.OrderInfoMapper;
+import com.atguigu.daijia.order.mapper.OrderProfitsharingMapper;
 import com.atguigu.daijia.order.mapper.OrderStatusLogMapper;
 import com.atguigu.daijia.order.service.OrderInfoService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -46,6 +51,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     //redis工具
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private OrderBillMapper orderBillMapper;
+    @Autowired
+    private OrderProfitsharingMapper orderProfitsharingMapper;
+
 
     /**
      * 乘客下单，保存订单信息
@@ -297,6 +308,66 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         } else {
             throw new GuiguException(ResultCodeEnum.UPDATE_ERROR);
         }
+    }
+
+    /**
+     * 根据时间段获取订单数
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public Long getOrderNumByTime(String startTime, String endTime) {
+        // 09 <= time < 10 <= time1 < 11
+        LambdaQueryWrapper<OrderInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrderInfo::getStartServiceTime, startTime);
+        wrapper.lt(OrderInfo::getStartServiceTime, endTime);
+        Long count = orderInfoMapper.selectCount(wrapper);
+        return count;
+    }
+
+    /**
+     * 结束代驾服务更新订单账单
+     * @param updateOrderBillForm
+     * @return
+     */
+    @Override
+    public Boolean endDrive(UpdateOrderBillForm updateOrderBillForm) {
+        //1.更新订单信息
+        //update order_info set ...... where id = ? and driver_id = ?
+        LambdaQueryWrapper<OrderInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrderInfo::getId, updateOrderBillForm.getOrderId());
+        wrapper.eq(OrderInfo::getDriverId, updateOrderBillForm.getDriverId());
+
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setStatus(OrderStatus.END_SERVICE.getStatus());
+        orderInfo.setEndServiceTime(new Date());
+        orderInfo.setRealAmount(updateOrderBillForm.getTotalAmount());
+        orderInfo.setFavourFee(updateOrderBillForm.getFavourFee());
+        orderInfo.setRealDistance(updateOrderBillForm.getRealDistance());
+
+        int rows = orderInfoMapper.update(orderInfo, wrapper);
+
+        if (rows == 1) {
+            //添加账单数据
+            OrderBill orderBill = new OrderBill();
+            BeanUtils.copyProperties(updateOrderBillForm, orderBill);
+            orderBill.setOrderId(updateOrderBillForm.getOrderId());
+            orderBill.setPayAmount(updateOrderBillForm.getTotalAmount());
+            orderBillMapper.insert(orderBill);
+
+            //添加分账信息
+            OrderProfitsharing orderProfitsharing = new OrderProfitsharing();
+            BeanUtils.copyProperties(updateOrderBillForm, orderProfitsharing);
+            orderProfitsharing.setOrderId(updateOrderBillForm.getOrderId());
+            orderProfitsharing.setRuleId(updateOrderBillForm.getProfitsharingRuleId());
+            orderProfitsharing.setStatus(1);
+            orderProfitsharingMapper.insert(orderProfitsharing);
+        } else {
+            throw new GuiguException(ResultCodeEnum.UPDATE_ERROR);
+        }
+
+        return true;
     }
 
     /**

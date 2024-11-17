@@ -6,7 +6,9 @@ import com.atguigu.daijia.model.form.map.UpdateDriverLocationForm;
 import com.atguigu.daijia.model.form.map.UpdateOrderLocationForm;
 import com.atguigu.daijia.model.vo.map.NearByDriverVo;
 import com.atguigu.daijia.model.vo.map.OrderLocationVo;
+import com.atguigu.daijia.model.vo.map.OrderServiceLastLocationVo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface LocationService {
@@ -53,4 +55,18 @@ public interface LocationService {
      * @return
      */
     Boolean saveOrderServiceLocation(List<OrderServiceLocationForm> orderLocationServiceFormList);
+
+    /**
+     * 代驾服务：获取订单服务的最后一个位置信息
+     * @param orderId
+     * @return
+     */
+    OrderServiceLastLocationVo getOrderServiceLastLocation(Long orderId);
+
+    /**
+     * 代驾服务：计算订单实际里程
+     * @param orderId
+     * @return
+     */
+    BigDecimal calculateOrderRealDistance(Long orderId);
 }
