@@ -5,7 +5,11 @@ import com.atguigu.daijia.model.form.order.OrderInfoForm;
 import com.atguigu.daijia.model.form.order.StartDriveForm;
 import com.atguigu.daijia.model.form.order.UpdateOrderBillForm;
 import com.atguigu.daijia.model.form.order.UpdateOrderCartForm;
+import com.atguigu.daijia.model.vo.base.PageVo;
 import com.atguigu.daijia.model.vo.order.CurrentOrderInfoVo;
+import com.atguigu.daijia.model.vo.order.OrderBillVo;
+import com.atguigu.daijia.model.vo.order.OrderProfitsharingVo;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface OrderInfoService extends IService<OrderInfo> {
@@ -82,4 +86,42 @@ public interface OrderInfoService extends IService<OrderInfo> {
      * @return
      */
     Boolean endDrive(UpdateOrderBillForm updateOrderBillForm);
+
+    /**
+     * 获取乘客订单分页列表
+     * @param pageParam
+     * @param customerId
+     * @return
+     */
+    PageVo findCustomerOrderPage(Page<OrderInfo> pageParam, Long customerId);
+
+    /**
+     * 获取司机订单分页列表
+     * @param pageParam
+     * @param driverId
+     * @return
+     */
+    PageVo findDriverOrderPage(Page<OrderInfo> pageParam, Long driverId);
+
+    /**
+     * 根据订单 id 获取实际账单信息
+     * @param orderId
+     * @return
+     */
+    OrderBillVo getOrderBillInfo(Long orderId);
+
+    /**
+     * 根据订单 id 获取实际分账信息
+     * @param orderId
+     * @return
+     */
+    OrderProfitsharingVo getOrderProfitsharing(Long orderId);
+
+    /**
+     * 发送账单信息
+     * @param orderId
+     * @param driverId
+     * @return
+     */
+    Boolean sendOrderBillInfo(Long orderId, Long driverId);
 }
