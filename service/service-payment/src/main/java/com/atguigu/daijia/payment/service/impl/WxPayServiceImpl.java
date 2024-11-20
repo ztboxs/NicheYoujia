@@ -28,6 +28,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.integration.config.GlobalChannelInterceptor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -192,6 +193,7 @@ public class WxPayServiceImpl implements WxPayService {
      * 支付成功后续处理
      * @param orderNo
      */
+    @GlobalChannelInterceptor
     @Override
     public void handleOrder(String orderNo) {
         //1 远程调用：更新订单状态：已经支付
