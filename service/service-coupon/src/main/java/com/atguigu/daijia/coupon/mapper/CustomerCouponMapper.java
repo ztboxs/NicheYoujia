@@ -8,4 +8,10 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CustomerCouponMapper extends BaseMapper<CustomerCoupon> {
 
 
+    /**
+     * 更新领取数量
+     * @param couponId
+     * @return
+     */
+    int updateReceiveCount(Long couponId);
 }
