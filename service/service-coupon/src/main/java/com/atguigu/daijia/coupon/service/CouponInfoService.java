@@ -1,6 +1,7 @@
 package com.atguigu.daijia.coupon.service;
 
 import com.atguigu.daijia.model.entity.coupon.CouponInfo;
+import com.atguigu.daijia.model.form.coupon.UseCouponForm;
 import com.atguigu.daijia.model.vo.coupon.AvailableCouponVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.math.BigDecimal;
@@ -24,4 +25,11 @@ public interface CouponInfoService extends IService<CouponInfo> {
      * @return
      */
     List<AvailableCouponVo> findAvailableCoupon(Long customerId, BigDecimal orderAmount);
+
+    /**
+     * 使用优惠卷
+     * @param useCouponForm
+     * @return
+     */
+    BigDecimal useCoupon(UseCouponForm useCouponForm);
 }
